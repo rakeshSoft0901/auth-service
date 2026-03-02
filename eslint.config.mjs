@@ -1,20 +1,26 @@
 // @ts-check
 
-import eslint from '@eslint/js';
-import { defineConfig } from 'eslint/config';
-import { dot } from 'node:test/reporters';
-import tseslint from 'typescript-eslint';
+import eslint from '@eslint/js'
+import { defineConfig } from 'eslint/config'
+import { dot } from 'node:test/reporters'
+import tseslint from 'typescript-eslint'
 
 export default defineConfig(
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
   {
-    ignores: ['dist', 'node_modules', 'tsconfig.json', '.prettier*', 'eslint.config.mjs'],
+    ignores: [
+      'dist',
+      'node_modules',
+      'tsconfig.json',
+      '.prettier*',
+      'eslint.config.mjs',
+    ],
   },
   {
     languageOptions: {
       parserOptions: {
-        project: "./tsconfig.eslint.json",
+        project: './tsconfig.eslint.json',
       },
     },
   },
@@ -25,4 +31,4 @@ export default defineConfig(
       'no-unused-vars': 'error',
     },
   },
-);
+)

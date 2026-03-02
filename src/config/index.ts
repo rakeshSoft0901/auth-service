@@ -1,9 +1,9 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv'
 
-dotenv.config();
+dotenv.config()
 
 const Config = {
   PORT: process.env.PORT,
-};
+}
 
-export default Config;
+export default Config
