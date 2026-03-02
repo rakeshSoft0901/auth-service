@@ -1,9 +1,15 @@
-import { Config } from "./config/index.js";
-
-console.log(">>>>>>>>>>>>>>>server js data")
+import app from "./app";
+import Config from "./config";
 
 function welcome(name: string){
-  console.log(`Welcome ${name}!`, Config);
+  try{
+    const PORT = Config.PORT 
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  }catch(error){
+    console.error("Error starting server:", error);
+  }
 }
 
 welcome("hello")
