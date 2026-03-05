@@ -7,7 +7,7 @@ const app = express()
 app.get('/', (req: Request, res: Response) => {
   // const err = createHttpError(401, 'Bad Request')
   // next(err)
-  res.status(200).json({ message: 'Hello World!' })
+  res.status(200).json({ message: 'Hello World sdf' })
 })
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
