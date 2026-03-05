@@ -35,6 +35,17 @@ describe('Post /auth/register', () => {
         (response.headers as Record<string, string>)['content-type'],
       ).toEqual(expect.stringContaining('application/json'))
     })
+
+    it('should persist the user in the database', async () => {
+      const userData = {
+        email: 'user@example.com',
+        password: 'password123',
+        firstName: 'John',
+        lastName: 'Doe',
+      }
+
+      await request(app).post('/auth/register').send(userData)
+    })
   })
 
   describe('Given an invalid request body', () => {})
