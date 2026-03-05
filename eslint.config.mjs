@@ -2,7 +2,6 @@
 
 import eslint from '@eslint/js'
 import { defineConfig } from 'eslint/config'
-import { dot } from 'node:test/reporters'
 import tseslint from 'typescript-eslint'
 
 export default defineConfig(
@@ -15,20 +14,29 @@ export default defineConfig(
       'tsconfig.json',
       '.prettier*',
       'eslint.config.mjs',
+      'jest.config.ts',
     ],
   },
   {
     languageOptions: {
       parserOptions: {
         project: './tsconfig.eslint.json',
+        // tsconfigRootDir: import.meta.dirname
       },
     },
   },
   {
     rules: {
-      // Add any custom rules here
       'dot-notation': 'error',
       'no-unused-vars': 'error',
+    },
+  },
+  {
+    files: ["test/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
     },
   },
 )

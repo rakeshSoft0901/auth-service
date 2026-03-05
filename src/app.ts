@@ -1,12 +1,13 @@
 import express, { NextFunction, Request, Response } from 'express'
 import logger from './config/logger'
-import createHttpError, { HttpError } from 'http-errors'
+import { HttpError } from 'http-errors'
 
 const app = express()
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-  const err = createHttpError(401, 'Bad Request')
-  next(err)
+app.get('/', (req: Request, res: Response) => {
+  // const err = createHttpError(401, 'Bad Request')
+  // next(err)
+  res.status(200).json({ message: 'Hello World!' })
 })
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
