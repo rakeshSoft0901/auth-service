@@ -14,13 +14,13 @@
   "author": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.ts",
+    "dev": "cross-env NODE_ENV=development nodemon src/server.ts",
     "format": "prettier --write .",
     "format:check": "prettier . --check",
     "lint:fix": "eslint . --fix",
     "lint": "eslint .",
     "build": "tsc",
-    "test": "jest --runInBand",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -31,6 +31,7 @@
     "@types/node": "^25.3.3",
     "@types/supertest": "^7.2.0",
     "@types/winston": "^2.4.4",
+    "cross-env": "^10.1.0",
     "eslint": "^10.0.2",
     "husky": "^9.1.7",
     "jest": "^30.2.0",
