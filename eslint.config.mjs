@@ -28,7 +28,8 @@ export default defineConfig(
   {
     rules: {
       'dot-notation': 'error',
-      'no-unused-vars': 'error',
+      'no-unused-vars': 'off',
+      "@typescript-eslint/no-unused-vars": ["error"]
     },
   },
   {

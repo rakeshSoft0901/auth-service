@@ -5,6 +5,7 @@ import { HttpError } from 'http-errors'
 import authRoutes from './routes/auth'
 
 const app = express()
+app.use(express.json())
 
 app.get('/', (req: Request, res: Response) => {
   // const err = createHttpError(401, 'Bad Request')
