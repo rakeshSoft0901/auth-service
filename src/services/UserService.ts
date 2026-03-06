@@ -9,6 +9,11 @@ export class UserService {
   constructor(private userRepository: Repository<User>) {}
 
   async create({ firstName, lastName, email, password, role }: UserData) {
+    const user = await this.userRepository.findOneBy({ email: email })
+    if (user) {
+      const err = createHttpError(400, 'Email already exists')
+      throw err
+    }
     const hashedPassword = await bcrypt.hash(password, HASH_SALT_ROUNDS)
     try {
       // Hash the password

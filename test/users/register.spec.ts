@@ -107,7 +107,40 @@ describe('Post /auth/register', () => {
       expect(users[0].password).not.toBe(userData.password)
       expect(users[0].password).toHaveLength(60) // bcrypt hashes are typically 60 characters long
     })
+
+    it('should return a 400 status code if email is already present', async () => {
+      const userData = {
+        email: 'user@example.com',
+        password: 'password123',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: Roles.CUSTOMER,
+      }
+
+      const userRepository = connection.getRepository(User)
+      await userRepository.save(userData)
+
+      const response = await request(app).post('/auth/register').send(userData)
+      expect(response.status).toBe(400)
+      expect(response.body.error[0]).toHaveProperty(
+        'message',
+        'Email already exists',
+      )
+    })
   })
 
-  describe('Given an invalid request body', () => {})
+  describe('Given an invalid request body', () => {
+    it('should return a 400 status code', async () => {
+      const userData = {
+        email: '',
+        password: 'password123',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: Roles.CUSTOMER,
+      }
+
+      const response = await request(app).post('/auth/register').send(userData)
+      expect(response.status).toBe(400)
+    })
+  })
 })
