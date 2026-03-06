@@ -15,6 +15,9 @@ export default defineConfig(
       '.prettier*',
       'eslint.config.mjs',
       'jest.config.ts',
+      'scripts/**/*',
+      'certs/**/*',
+      'logs/**/*',
     ],
   },
   {

@@ -127,6 +127,37 @@ describe('Post /auth/register', () => {
         'Email already exists',
       )
     })
+
+    it('should return the access token and refresh token inside a cookie', async () => {
+      const userData = {
+        email: 'user@example.com',
+        password: 'password123',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: Roles.CUSTOMER,
+      }
+
+      const response = await request(app).post('/auth/register').send(userData)
+
+      let accessToken = null
+      let refreshToken = null
+      const cookies = response.headers['set-cookie']
+
+      if (Array.isArray(cookies)) {
+        cookies.forEach((cookie) => {
+          if (cookie.startsWith('accessToken=')) {
+            accessToken = cookie.split(';')[0].split('=')[1]
+          }
+
+          if (cookie.startsWith('refreshToken=')) {
+            refreshToken = cookie.split(';')[0].split('=')[1]
+          }
+        })
+      }
+
+      expect(accessToken).not.toBeNull()
+      expect(refreshToken).not.toBeNull()
+    })
   })
 
   describe('Given an invalid request body', () => {
