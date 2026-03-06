@@ -11,3 +11,9 @@ export interface UserData {
 export interface RegisterRequestBody extends Request {
   body: UserData
 }
+
+// export interface TokenPayload {
+//   id: number
+//   email: string
+//   role: string
+// }

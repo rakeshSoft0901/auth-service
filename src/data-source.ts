@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import { DataSource } from 'typeorm'
 import Config from './config'
 import { User } from './entity/User'
+import { RefreshToken } from './entity/RefreshToken'
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -13,7 +14,7 @@ export const AppDataSource = new DataSource({
   // synchronize: true will automatically create the database schema on application startup based on your entities.
   synchronize: Config.NODE_ENV === 'development' || Config.NODE_ENV === 'test',
   logging: false,
-  entities: [User],
+  entities: [User, RefreshToken],
   migrations: [],
   subscribers: [],
 })

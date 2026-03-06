@@ -4,6 +4,7 @@ import { DataSource } from 'typeorm'
 import { AppDataSource } from '../../src/data-source'
 import { User } from '../../src/entity/User'
 import { Roles } from '../../src/constants'
+import { RefreshToken } from '../../src/entity/RefreshToken'
 
 describe('Post /auth/register', () => {
   let connection: DataSource
@@ -157,6 +158,29 @@ describe('Post /auth/register', () => {
 
       expect(accessToken).not.toBeNull()
       expect(refreshToken).not.toBeNull()
+    })
+
+    it('should store the refresh token in the database', async () => {
+      const userData = {
+        email: 'user@example.com',
+        password: 'password123',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: Roles.CUSTOMER,
+      }
+
+      await request(app).post('/auth/register').send(userData)
+
+      const refreshTokenRepository = connection.getRepository(RefreshToken)
+      const refreshTokens = await refreshTokenRepository.find({
+        where: {
+          user: {
+            email: userData.email,
+          },
+        },
+      })
+
+      expect(refreshTokens).toHaveLength(1)
     })
   })
 
