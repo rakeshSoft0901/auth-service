@@ -90,6 +90,23 @@ describe('Post /auth/register', () => {
       expect(users).toHaveLength(1)
       expect(users[0].role).toBe(Roles.CUSTOMER)
     })
+
+    it('should store the password securely', async () => {
+      const userData = {
+        email: 'user@example.com',
+        password: 'password123',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: Roles.CUSTOMER,
+      }
+
+      await request(app).post('/auth/register').send(userData)
+      const userRepository = connection.getRepository(User)
+      const users = await userRepository.find()
+      expect(users).toHaveLength(1)
+      expect(users[0].password).not.toBe(userData.password)
+      expect(users[0].password).toHaveLength(60) // bcrypt hashes are typically 60 characters long
+    })
   })
 
   describe('Given an invalid request body', () => {})
