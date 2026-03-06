@@ -5,6 +5,7 @@ import { checkSchema } from 'express-validator'
 export default checkSchema({
   email: {
     errorMessage: 'Invalid email address',
-    isEmail: true,
+    notEmpty: true,
+    trim: true,
   },
 })

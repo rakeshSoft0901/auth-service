@@ -142,5 +142,22 @@ describe('Post /auth/register', () => {
       const response = await request(app).post('/auth/register').send(userData)
       expect(response.status).toBe(400)
     })
+
+    it('should trim the email field', async () => {
+      const userData = {
+        email: ' user@example.com ',
+        password: 'password123',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: Roles.CUSTOMER,
+      }
+
+      await request(app).post('/auth/register').send(userData)
+
+      const userRepository = connection.getRepository(User)
+      const users = await userRepository.find()
+      expect(users).toHaveLength(1)
+      expect(users[0].email).toBe('user@example.com')
+    })
   })
 })
