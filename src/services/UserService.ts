@@ -30,4 +30,14 @@ export class UserService {
       throw error
     }
   }
+
+  async getUser(email: string) {
+    try {
+      const user = await this.userRepository.findOneBy({ email: email })
+      return user
+    } catch (err) {
+      const error = createHttpError(500, 'Error fetching user', { cause: err })
+      throw error
+    }
+  }
 }
