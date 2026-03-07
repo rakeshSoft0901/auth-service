@@ -5,6 +5,9 @@ import request from 'supertest'
 import app from '../../src/app'
 import { User } from '../../src/entity/User'
 import { Roles } from '../../src/constants'
+import { TokenService } from '../../src/services/TokenService'
+import { RefreshToken } from '../../src/entity/RefreshToken'
+import { JwtPayload } from 'jsonwebtoken'
 
 describe('GET /auth/self', () => {
   let connection: DataSource
@@ -31,7 +34,34 @@ describe('GET /auth/self', () => {
 
   describe('Given a valid access token', () => {
     it('should return a 200 status code', async () => {
-      const response = await request(app).get('/auth/self').send()
+      // register user
+      const userData = {
+        email: 'user@example.com',
+        password: 'password123',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: Roles.CUSTOMER,
+      }
+
+      const userRepository = connection.getRepository(User)
+      const user = await userRepository.save(userData)
+
+      const tokenRepository = AppDataSource.getRepository(RefreshToken)
+      const tokenService = new TokenService(tokenRepository)
+
+      // generate token
+      const payload: JwtPayload = {
+        sub: String(user.id),
+        email: user.email,
+        role: user.role,
+      }
+      const accessToken = tokenService.generateAccessToken(payload)
+      // add token to cookie
+      // make request to /auth/self
+      const response = await request(app)
+        .get('/auth/self')
+        .set('Cookie', [`accessToken=${accessToken}`])
+        .send()
       expect(response.status).toBe(200)
       // Arrange
     })
@@ -46,16 +76,24 @@ describe('GET /auth/self', () => {
         role: Roles.CUSTOMER,
       }
       const userRepository = connection.getRepository(User)
-      const data = await userRepository.save(userData)
+      const user = await userRepository.save(userData)
       // generate token
-      const accessToken = jwks.token({ sub: String(data.id), role: data.role })
+      const tokenRepository = AppDataSource.getRepository(RefreshToken)
+      const tokenService = new TokenService(tokenRepository)
+
+      const payload: JwtPayload = {
+        sub: String(user.id),
+        email: user.email,
+        role: user.role,
+      }
+      const accessToken = tokenService.generateAccessToken(payload)
       // add token to cookie
       // make request to /auth/self
       const response = await request(app)
         .get('/auth/self')
         .set('Cookie', [`accessToken=${accessToken}`])
         .send()
-      expect((response.body as Record<string, string>).id).toBe(data.id)
+      expect((response.body as Record<string, string>).id).toBe(user.id)
     })
   })
 })

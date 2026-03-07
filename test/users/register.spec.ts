@@ -36,8 +36,6 @@ describe('Post /auth/register', () => {
 
       const response = await request(app).post('/auth/register').send(userData)
 
-      console.log(response.body)
-
       expect(response.status).toBe(201)
       expect(response.body).toHaveProperty(
         'message',

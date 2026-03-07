@@ -12,6 +12,7 @@ export const authenticate = async (
   next: NextFunction,
 ) => {
   const accessToken = req.cookies?.accessToken as string
+
   if (!accessToken) {
     res.status(401).json({ message: 'Unauthorized' })
     return
@@ -19,24 +20,29 @@ export const authenticate = async (
 
   const publicKey = readFileSync(
     path.join(__dirname, '../../certs/public.pem'),
-    'utf-8',
+    'utf8',
   )
-  const payload = jwt.verify(accessToken, publicKey, {
-    algorithms: ['RS256'],
-  })
-  if (typeof payload === 'string') {
-    res.status(401).json({ message: 'Invalid token' })
-    return
-  }
 
-  const { email } = payload as AccessTokenPayload
-  const userRepogistory = AppDataSource.getRepository(User)
-  const user = await userRepogistory.findOneBy({ email })
-  if (!user) {
-    res.status(401).json({ message: 'User not found' })
-    return
-  }
+  try {
+    const payload = jwt.verify(accessToken, publicKey, {
+      algorithms: ['RS256'],
+    })
 
-  req.user = user
-  next()
+    if (typeof payload === 'string') {
+      res.status(401).json({ message: 'Invalid token' })
+      return
+    }
+
+    const { email } = payload as AccessTokenPayload
+    const userRepogistory = AppDataSource.getRepository(User)
+    const user = await userRepogistory.findOneBy({ email })
+    if (!user) {
+      res.status(401).json({ message: 'User not found' })
+      return
+    }
+    req.user = user
+    next()
+  } catch (err) {
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>', err)
+  }
 }
