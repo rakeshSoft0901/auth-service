@@ -130,6 +130,6 @@ export class AuthController {
   }
 
   self(req: Request, res: Response) {
-    res.json({ message: 'This is a protected route', id: req?.user?.id })
+    res.json({ message: 'This is a protected route', data: req.user })
   }
 }

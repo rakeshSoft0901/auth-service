@@ -93,7 +93,10 @@ describe('GET /auth/self', () => {
         .get('/auth/self')
         .set('Cookie', [`accessToken=${accessToken}`])
         .send()
-      expect((response.body as Record<string, string>).id).toBe(user.id)
+
+      const responseUser = response.body.data.id
+
+      expect(responseUser.id).toBe(user.id)
     })
   })
 })
