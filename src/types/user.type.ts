@@ -1,4 +1,5 @@
 import { Request } from 'express'
+import { JwtPayload } from 'jsonwebtoken'
 
 export interface UserData {
   firstName: string
@@ -17,6 +18,11 @@ export interface LoginRequestBody extends Request {
     email: string
     password: string
   }
+}
+
+export interface AccessTokenPayload extends JwtPayload {
+  sub: string
+  email: string
 }
 // export interface TokenPayload {
 //   id: number

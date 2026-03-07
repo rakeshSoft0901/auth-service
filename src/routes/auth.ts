@@ -10,6 +10,7 @@ import {
   loginValidator,
   registerValidator,
 } from '../validators/register-validator'
+import { authenticate } from '../middlewares/authenticate'
 
 const router = express.Router()
 
@@ -31,6 +32,10 @@ router.post(
   loginValidator,
   (req: Request, res: Response, next: NextFunction) =>
     authController.login(req, res, next),
+)
+
+router.get('/self', authenticate, (req: Request, res: Response) =>
+  authController.self(req, res),
 )
 
 export default router

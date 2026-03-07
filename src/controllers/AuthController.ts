@@ -1,4 +1,4 @@
-import { NextFunction, Response } from 'express'
+import { Request, NextFunction, Response } from 'express'
 import { JwtPayload } from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { LoginRequestBody, RegisterRequestBody } from '../types/user.type'
@@ -127,5 +127,10 @@ export class AuthController {
       next(err)
       return
     }
+  }
+
+  self(req: Request, res: Response) {
+    console.log('user', req.user)
+    res.json({ message: 'This is a protected route' })
   }
 }
