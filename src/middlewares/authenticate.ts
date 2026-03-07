@@ -40,6 +40,7 @@ export const authenticate = async (
       res.status(401).json({ message: 'User not found' })
       return
     }
+
     req.user = user
     next()
   } catch (err) {
