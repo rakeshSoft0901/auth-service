@@ -6,6 +6,11 @@ import authRoutes from './routes/auth'
 import cookieParser from 'cookie-parser'
 
 const app = express()
+app.use(
+  express.static('public', {
+    dotfiles: 'allow',
+  }),
+)
 app.use(express.json())
 app.use(cookieParser())
 

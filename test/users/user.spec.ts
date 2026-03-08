@@ -131,5 +131,22 @@ describe('GET /auth/self', () => {
 
       expect(responseUser).not.toHaveProperty('password')
     })
+
+    it('should return 401 status code if token does not exists', async () => {
+      // register user
+      const userData = {
+        email: 'user@example.com',
+        password: 'password123',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: Roles.CUSTOMER,
+      }
+      const userRepository = connection.getRepository(User)
+      await userRepository.save(userData)
+
+      const response = await request(app).get('/auth/self').send()
+
+      expect(response.statusCode).toBe(401)
+    })
   })
 })
