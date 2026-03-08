@@ -33,7 +33,12 @@ export class UserService {
 
   async getUser(email: string) {
     try {
-      const user = await this.userRepository.findOneBy({ email: email })
+      const user = await this.userRepository
+        .createQueryBuilder('user')
+        .addSelect('user.password')
+        .where('user.email = :email', { email })
+        .getOne()
+
       return user
     } catch (err) {
       const error = createHttpError(500, 'Error fetching user', { cause: err })
