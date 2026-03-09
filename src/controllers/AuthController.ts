@@ -179,4 +179,23 @@ export class AuthController {
       return
     }
   }
+
+  async logout(req: Request, res: Response, next: NextFunction) {
+    try {
+      const tokenId = req?.payload?.id
+
+      if (!tokenId) {
+        const error = createHttpError(400, 'Invalid Token')
+        throw error
+      }
+      await this.tokenService.deleteRefreshtoke(Number(tokenId))
+      res.clearCookie('accessToken')
+      res.clearCookie('refreshToken')
+
+      res.status(200).json({ message: 'User successfully Logout' })
+    } catch (err) {
+      next(err)
+      return
+    }
+  }
 }

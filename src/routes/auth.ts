@@ -10,7 +10,7 @@ import {
   loginValidator,
   registerValidator,
 } from '../validators/register-validator'
-import { authenticate } from '../middlewares/authenticate'
+import { authenticate, getRefreshTokenId } from '../middlewares/authenticate'
 import { validateRefreshToken } from '../middlewares/refreshToken'
 
 const router = express.Router()
@@ -44,6 +44,14 @@ router.post(
   validateRefreshToken,
   (req: Request, res: Response, next: NextFunction) =>
     authController.refresh(req, res, next),
+)
+
+router.delete(
+  '/logout',
+  authenticate,
+  getRefreshTokenId,
+  (req: Request, res: Response, next: NextFunction) =>
+    authController.logout(req, res, next),
 )
 
 export default router

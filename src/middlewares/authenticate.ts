@@ -4,7 +4,8 @@ import jwt from 'jsonwebtoken'
 import path from 'path'
 import { AppDataSource } from '../data-source'
 import { User } from '../entity/User'
-import { AccessTokenPayload } from '../types/user.type'
+import { AccessTokenPayload, RefreshTokenPayload } from '../types/user.type'
+import Config from '../config'
 
 export const authenticate = async (
   req: Request,
@@ -46,4 +47,35 @@ export const authenticate = async (
   } catch (err) {
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>', err)
   }
+}
+
+export const getRefreshTokenId = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const refreshToken = req.cookies.refreshToken as string
+
+  if (!refreshToken) {
+    res.status(401).json({ message: 'token is not valid' })
+    return
+  }
+
+  const tokenSecret = Config.REFRESH_TOKEN_SECRET
+  if (!tokenSecret) {
+    res.status(500).json({ message: 'secret token not found' })
+    return
+  }
+
+  const payload = jwt.verify(refreshToken, tokenSecret, {
+    algorithms: ['HS256'],
+  })
+
+  if (typeof payload === 'string') {
+    res.status(401).json({ message: 'Invalid token' })
+    return
+  }
+
+  req.payload = payload as RefreshTokenPayload
+  next()
 }
