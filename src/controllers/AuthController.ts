@@ -132,4 +132,51 @@ export class AuthController {
   self(req: Request, res: Response) {
     res.json({ message: 'This is a protected route', data: req.user })
   }
+
+  async refresh(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user
+      const oldTokenId = Number(req.payload?.id)
+      if (!user) {
+        const error = createHttpError(400, 'User not found')
+        throw error
+      }
+
+      const payload: JwtPayload = {
+        sub: String(user.id),
+        email: user.email,
+        role: user.role,
+      }
+
+      const newRefreshToken = await this.tokenService.persistRefreshToken(user)
+
+      const accessToken = this.tokenService.generateAccessToken(payload)
+
+      const refreshToken = this.tokenService.generateRefreshToken({
+        ...payload,
+        id: String(newRefreshToken.id),
+      })
+
+      await this.tokenService.deleteRefreshtoke(oldTokenId)
+
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 1000, // 15 minutes
+      })
+
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      })
+
+      res.status(200).json({ message: 'User has been logged in' })
+    } catch (err) {
+      next(err)
+      return
+    }
+  }
 }

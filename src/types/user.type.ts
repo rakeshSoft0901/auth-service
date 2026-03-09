@@ -24,6 +24,10 @@ export interface AccessTokenPayload extends JwtPayload {
   sub: string
   email: string
 }
+
+export interface RefreshTokenPayload extends JwtPayload {
+  id: string
+}
 // export interface TokenPayload {
 //   id: number
 //   email: string
