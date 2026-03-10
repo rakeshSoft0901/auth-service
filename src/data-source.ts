@@ -12,9 +12,11 @@ export const AppDataSource = new DataSource({
   password: Config.DB_PASSWORD || 'root',
   database: Config.DATABASE_NAME || 'auth_service',
   // synchronize: true will automatically create the database schema on application startup based on your entities.
-  synchronize: Config.NODE_ENV === 'development' || Config.NODE_ENV === 'test',
+  synchronize: false,
   logging: false,
   entities: [User, RefreshToken],
-  migrations: [],
-  subscribers: [],
+  migrations: ['src/migrations/*.ts'],
+
+  // subscribers: [],
+  migrationsTableName: 'custom_migrations_table',
 })

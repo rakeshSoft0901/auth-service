@@ -199,3 +199,9 @@ export class AuthController {
     }
   }
 }
+
+// generate migration
+// npm run migration:generate -- src/migrations/initialMigration -- -d src/data-source.ts
+
+// run migration
+// npm run migration:run -- -- -d src/data-source.ts
