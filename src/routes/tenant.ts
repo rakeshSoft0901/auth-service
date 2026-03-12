@@ -7,6 +7,7 @@ import logger from '../config/logger'
 import { authenticate } from '../middlewares/authenticate'
 import { tenantCanAccess } from '../middlewares/tenantCanAccess'
 import { Roles } from '../constants'
+import { tenantValidator } from '../validators/tenant-validator'
 
 const router = express.Router()
 
@@ -14,12 +15,44 @@ const tenantRepo = AppDataSource.getRepository(Tenant)
 const tenantService = new TenantService(tenantRepo)
 const tenantController = new TenantController(tenantService, logger)
 
+router.get(
+  '/',
+  authenticate,
+  tenantCanAccess([Roles.ADMIN]),
+  (req: Request, res: Response) => tenantController.all(req, res),
+)
+
+router.get(
+  '/:id',
+  authenticate,
+  tenantCanAccess([Roles.ADMIN]),
+  (req: Request, res: Response) => tenantController.get(req, res),
+)
+
 router.post(
   '/',
+  tenantValidator,
   authenticate,
   tenantCanAccess([Roles.ADMIN]),
   (req: Request, res: Response, next: NextFunction) =>
     tenantController.create(req, res, next),
+)
+
+router.put(
+  '/:id',
+  tenantValidator,
+  authenticate,
+  tenantCanAccess([Roles.ADMIN]),
+  (req: Request, res: Response, next: NextFunction) =>
+    tenantController.update(req, res, next),
+)
+
+router.delete(
+  '/:id',
+  authenticate,
+  tenantCanAccess([Roles.ADMIN]),
+  (req: Request, res: Response, next: NextFunction) =>
+    tenantController.update(req, res, next),
 )
 
 export default router

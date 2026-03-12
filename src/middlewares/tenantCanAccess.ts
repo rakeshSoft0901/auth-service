@@ -9,8 +9,6 @@ export const tenantCanAccess = (roles: string[]) => {
       return res.status(401).json({ message: 'Unauthorized' })
     }
 
-    console.log('>>>>>>>>>>>>>>>>>>>....', user.role)
-
     if (!roles.includes(user.role)) {
       const error = createHttpError(403, "You don't have enough permissions")
       next(error)
