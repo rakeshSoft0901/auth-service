@@ -29,7 +29,7 @@ export class AuthController {
         password,
         firstName,
         lastName,
-        role,
+        role: role,
       })
 
       this.logger.info(`User registered: ${email}`)

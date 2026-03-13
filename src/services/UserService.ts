@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import { Repository } from 'typeorm'
 import { User } from '../entity/User'
-import { UserData } from '../types/user.type'
+import { IUpdateUserData, UserData } from '../types/user.type'
 import createHttpError from 'http-errors'
 import { HASH_SALT_ROUNDS } from '../constants'
 
@@ -31,6 +31,15 @@ export class UserService {
     }
   }
 
+  async all() {
+    try {
+      return await this.userRepository.find()
+    } catch (err) {
+      const error = createHttpError(500, 'Error fetching user', { cause: err })
+      throw error
+    }
+  }
+
   async getUser(email: string) {
     try {
       const user = await this.userRepository
@@ -44,5 +53,36 @@ export class UserService {
       const error = createHttpError(500, 'Error fetching user', { cause: err })
       throw error
     }
+  }
+
+  async getUserById(id: number) {
+    try {
+      return await this.userRepository.findBy({ id: id })
+    } catch (err) {
+      const error = createHttpError(500, 'Error fetching user', { cause: err })
+      throw error
+    }
+  }
+
+  async update(id: number, { firstName, lastName }: IUpdateUserData) {
+    const user = await this.userRepository.findOne({ where: { id } })
+
+    if (!user) {
+      throw createHttpError(400, 'User not found')
+    }
+
+    user.firstName = firstName
+    user.lastName = lastName
+
+    await this.userRepository.save(user)
+    return user
+  }
+
+  async delete(id: number) {
+    const user = await this.userRepository.findOne({ where: { id } })
+    if (!user) {
+      throw createHttpError(404, 'User not found')
+    }
+    await this.userRepository.delete(id)
   }
 }
